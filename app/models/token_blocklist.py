@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime
 
-from ..base import db
+from ..extensions import db
 
 class TokenBlocklist(db.Model):
     id = Column(Integer, primary_key=True)

@@ -27,3 +27,4 @@ typing_extensions
 urllib3
 waitress
 Werkzeug
+schematics>=2.0.1

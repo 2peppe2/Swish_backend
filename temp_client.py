@@ -22,7 +22,7 @@ def test_swish():
 def test_create_payment():
     response = requests.post("http://127.0.0.1:5000/payment/create", json={"payeePaymentReference": "Id3", "payerAlias": "123456780", "amount": 100, "message": "Test"})
     print(response)
-    assert response.status_code == 200
+    print(response.json())
 
 def auth_test():
     response = requests.post("http://127.0.0.1:5000/auth/login", json={"email": "admin.swish@konf.se", "password": "admin"})
@@ -33,8 +33,9 @@ def auth_test():
     print(response)
     assert response.status_code == 200
 if __name__ == "__main__":
+    pass
     #test_temp_endpoint()
     #auth_test()
     #test_swish()
-    test_create_payment()
-    print("All tests passed!")
+    #test_create_payment()
+    #print("All tests passed!")

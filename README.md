@@ -18,6 +18,7 @@ To run this project, you will need to add an environment file named `.env` at th
 Copy this template to a file named .env in the root of the project
 
 ```plaintext
+SECRET_KEY = 'PETRUS_ÄR_BÄST_INGEN_PROTESTERAR'
 JWT_SECRET_KEY = "SECRET_KEY"
 ENVIRONMENT = "dev"
 FLASK_CONFIG = "development"

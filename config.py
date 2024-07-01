@@ -12,6 +12,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
+    WTF_CSRF_ENABLED = False
 
 class TestingConfig(Config):
     TESTING = True

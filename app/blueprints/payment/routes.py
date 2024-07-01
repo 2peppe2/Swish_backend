@@ -1,9 +1,12 @@
 from flask import Blueprint, jsonify, request, current_app
 from uuid import uuid4 as uuid
+from requests.exceptions import HTTPError
+
 from app.models import Payment
 from app.extensions import db, swish_client
-from requests.exceptions import HTTPError
 from app.swish.exceptions import SwishError
+from .validators import CreatePaymentForm
+
 
 
 payment = Blueprint("payment", __name__)
@@ -12,11 +15,14 @@ payment = Blueprint("payment", __name__)
 
 @payment.route('/create', methods=['POST'])
 def create_payment_route():
-    data = request.get_json()
-    payeePaymentReference = data.get('payeePaymentReference')
-    payerAlias = data.get('payerAlias')
-    amount = data.get('amount')
-    message = data.get('message')
+    form = CreatePaymentForm()
+    if not form.validate_on_submit():
+        return jsonify(form.errors), 400
+    payeePaymentReference = form.payeePaymentReference.data
+    payerAlias = form.payerAlias.data
+    amount = form.amount.data
+    message = form.message.data
+
     try:
         payment_request = swish_client.create_payment(amount, 'SEK', 'https://p3trus.se/', payeePaymentReference, message, payerAlias)
     except HTTPError as http_error:
@@ -39,4 +45,4 @@ def create_payment_route():
                         created_at= payment_request.date_created)
     db.session.add(new_payment)
     db.session.commit()
-    return "Payment created"
+    return jsonify(new_payment.to_dict()), 200

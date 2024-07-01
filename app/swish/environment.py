@@ -14,22 +14,22 @@ class Environment(object):
         try:
             return Environment.All[environment]
         except KeyError:
-            print ("ERROR: Provided environment name is invalid")
-            #raise ConfigurationError("Provided environment name is invalid")
+            print("ERROR: Provided environment name is invalid")
+            # raise ConfigurationError("Provided environment name is invalid")
 
 
 Environment.Test = Environment(
     name="test",
     base_url="https://mss.cpc.getswish.net/swish-cpcapi/api/v2/",
-    base_url_get="https://mss.cpc.getswish.net/swish-cpcapi/api/v1/"
+    base_url_get="https://mss.cpc.getswish.net/swish-cpcapi/api/v1/",
 )
 Environment.Production = Environment(
     name="production",
     base_url="https://cpc.getswish.net/swish-cpcapi/api/v2/",
-    base_url_get="https://mss.cpc.getswish.net/swish-cpcapi/api/v1/"
+    base_url_get="https://mss.cpc.getswish.net/swish-cpcapi/api/v1/",
 )
 Environment.All = {
     "test": Environment.Test,
     "production": Environment.Production,
-    "dev": Environment.Test
+    "dev": Environment.Test,
 }

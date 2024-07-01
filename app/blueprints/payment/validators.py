@@ -12,3 +12,6 @@ class CreatePaymentForm(FlaskForm):
     )
     amount = IntegerField("amount", validators=[DataRequired()])
     message = StringField("message", validators=[DataRequired(), Length(min=1, max=50)])
+
+class CancelPaymentForm(FlaskForm):
+    id = StringField("id", validators=[DataRequired(), Length(min=32, max=32)])

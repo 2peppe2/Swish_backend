@@ -64,3 +64,6 @@ if __name__ == "__main__":
     # test_swish()
     # test_create_payment()
     # print("All tests passed!")
+    from datetime import datetime, timedelta
+    print()
+    print(datetime.now())

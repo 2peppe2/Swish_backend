@@ -1,8 +1,6 @@
-import re
 from flask import Blueprint, jsonify, request, current_app
 from requests.exceptions import HTTPError
-from dotenv import load_dotenv
-from os import getenv
+
 
 from app.models import Payment
 from app.extensions import db, swish_client
@@ -11,8 +9,6 @@ from .validators import CreatePaymentForm
 
 
 payment = Blueprint("payment", __name__)
-load_dotenv()
-allowed_ip = getenv("SWISH_CALLBACK_IP")
 
 
 @payment.route("/create", methods=["POST"])
@@ -47,10 +43,16 @@ def create_payment_route():
             + swish_error.error_code
         )
         return swish_error.error_message, swish_error.error_code
+    current_app.logger.info(
+        "Payment request created "
+        + payment_request.id
+        + ", "
+        + payment_request.payee_payment_reference
+    )
     new_payment = Payment(
         transaction_id=payment_request.id,
         payee_payment_reference=payment_request.payee_payment_reference,
-        payment_reference=payment_request.payment_reference,
+        payment_reference=None,
         payee_alias=payment_request.payee_alias,
         payer_alias=payment_request.payer_alias,
         currency=payment_request.currency,
@@ -63,9 +65,3 @@ def create_payment_route():
     db.session.add(new_payment)
     db.session.commit()
     return jsonify(new_payment.to_dict()), 200
-
-
-@payment.route("/callback", methods=["POST"])
-def callback_route():
-
-    return "Callback route", 200

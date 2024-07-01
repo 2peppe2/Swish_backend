@@ -17,19 +17,19 @@ class Payment(db.Model):
 
     def __init__(
         self,
-        transaction_id,
-        payee_payment_reference,
-        payment_reference,
-        payee_alias,
-        payer_alias,
-        currency,
-        message,
-        status,
-        amount,
-        created_at,
-        paid_at,
+        id: str,
+        payee_payment_reference: str,
+        payment_reference: str,
+        payee_alias: int,
+        payer_alias: int,
+        currency: str,
+        message: str,
+        status: str,
+        amount: int,
+        created_at: DateTime,
+        paid_at: DateTime
     ):
-        self.transaction_id = transaction_id
+        self.id = id
         self.payee_payment_reference = payee_payment_reference
         self.payment_reference = payment_reference
         self.payee_alias = payee_alias

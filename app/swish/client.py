@@ -33,7 +33,7 @@ class SwishClient(object):
         )
 
     def get(self, endpoint):
-        url = self.environment.base_url_get + endpoint
+        url = self.environment.base_url + endpoint
         return requests.get(url, cert=self.cert, verify=self.verify)
 
     def create_payment(
@@ -60,7 +60,7 @@ class SwishClient(object):
         )
 
         uuid = generate_uuid()
-        response = self.post("paymentrequests/" + uuid, payment_request.to_primitive())
+        response = self.post("v2/paymentrequests/" + uuid, payment_request.to_primitive())
         if response.status_code == 422:
             raise SwishError(response.json())
         response.raise_for_status()
@@ -74,11 +74,20 @@ class SwishClient(object):
         )
 
     def get_payment(self, payment_request_id):
-        response = self.get("paymentrequests/" + payment_request_id)
+        response = self.get("v1/paymentrequests/" + payment_request_id)
         response.raise_for_status()
         response_dict = response.json()
         del response_dict["callbackIdentifier"]
         return Payment(response_dict)
+    
+    def cancel_payment(self, payment_request_id):
+        response = self.post("v1/paymentrequests/" + payment_request_id, {
+            "op": "replace",
+            "path": "/status",
+            "value": "cancelled"
+        })
+        response.raise_for_status()
+        return Payment(response.json())
 
     def create_refund(
         self,

@@ -41,12 +41,16 @@ def create_payment_route():
             + swish_error.error_code
         )
         return swish_error.error_message, swish_error.error_code
-    """current_app.logger.info(
+    current_app.logger.info(
         "Payment request created "
         + payment_request.id
         + ", "
         + payment_request.payee_payment_reference
-    )""" #TODO FIX THIS
+        + ", "
+        + str(payment_request.amount)
+        + " "
+        + payment_request.currency
+    )
     new_payment = Payment(
         id=payment_request.id,
         payee_payment_reference=payment_request.payee_payment_reference,

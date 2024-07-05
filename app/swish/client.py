@@ -1,5 +1,6 @@
 import requests
 from datetime import datetime
+import json
 
 
 from .environment import Environment
@@ -26,8 +27,16 @@ class SwishClient(object):
         url = self.environment.base_url + endpoint
         return requests.put(
             url=url,
-            json=payload,
+            data=json.dumps(payload),
             headers={"Content-Type": "application/json"},
+            cert=self.cert
+        )
+    def patch(self, endpoint, payload):
+        url = self.environment.base_url + endpoint
+        return requests.patch(
+            url=url,
+            data=payload,
+            headers={"Content-Type": "application/json-patch+json"},
             cert=self.cert,
             verify=self.verify,
         )
@@ -54,8 +63,7 @@ class SwishClient(object):
                 "payee_payment_reference": str(payee_payment_reference),
                 "message": str(message),
                 "payer_alias": str(payer_alias),
-                "date_created": datetime.now(),
-                "status": "CREATED",
+                "status": "CREATED"
             }
         )
 
@@ -64,14 +72,10 @@ class SwishClient(object):
         if response.status_code == 422:
             raise SwishError(response.json())
         response.raise_for_status()
-
-        return Payment(
-            {
-                "id": response.headers.get("Location").split("/")[-1],
-                "location": response.headers.get("Location"),
-                "request_token": response.headers.get("PaymentRequestToken"),
-            }
-        )
+        payment_request.id = uuid
+        payment_request.location = response.headers.get("Location")
+        payment_request.date_created = datetime.now()
+        return payment_request
 
     def get_payment(self, payment_request_id):
         response = self.get("v1/paymentrequests/" + payment_request_id)
@@ -81,7 +85,7 @@ class SwishClient(object):
         return Payment(response_dict)
     
     def cancel_payment(self, payment_request_id):
-        response = self.post("v1/paymentrequests/" + payment_request_id, {
+        response = self.patch("v1/paymentrequests/" + payment_request_id, {
             "op": "replace",
             "path": "/status",
             "value": "cancelled"

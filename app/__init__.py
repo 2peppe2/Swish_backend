@@ -11,7 +11,7 @@ from .extensions import db, jwt, bcrypt
 
 from typing import Dict
 
-from .blueprints.payment import payment as payment_blueprint
+from .blueprints.payment import payment_bp as payment_blueprint
 from .blueprints.auth import auth as auth_blueprint
 
 

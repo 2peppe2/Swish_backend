@@ -12,7 +12,7 @@ jwt = JWTManager()
 bcrypt = Bcrypt()
 
 load_dotenv()
-_cert_path = getenv("ROOT_PATH") + "certs/"
+_cert_path = "certs/"
 swish_client = SwishClient(
     environment=getenv("ENVIRONMENT"),
     merchant_swish_number=getenv("MERCHANT_SWISH_NUMBER"),

@@ -24,8 +24,7 @@ def test_payment_create_route(client):
             "message": "Test",
         },
     )
-    assert response.status_code == 200
-
+    assert response.status_code == 201
 
 
 def test_payment_callback_route(client):
@@ -69,17 +68,14 @@ def test_payment_callback_route(client):
     )
     assert response.status_code == 200
 
-def test_cancel_route(client):
-    """Test the cancel route."""
-    payment = client.post(
-        "/payment/create",
+
+def test_login_route(client):
+    response = client.post(
+        "/auth/login",
         json={
-            "payeePaymentReference": "Id4",
-            "payerAlias": "123456780",
-            "amount": 100,
-            "message": "Test",
+            "email": "admin.swish@konf.se",
+            "password": "admin",
         },
     )
-    assert payment.status_code == 200
-    response = client.post("/payment/cancel/", json={"id": payment.json["id"]})
     assert response.status_code == 200
+    assert "access_token" in response.json

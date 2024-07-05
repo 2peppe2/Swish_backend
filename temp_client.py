@@ -56,14 +56,36 @@ def auth_test():
     print(response)
     assert response.status_code == 200
 
+def temp_test():
+    from dotenv import load_dotenv
+    from os import getenv
+    import json
 
+
+    data = {
+            "payeePaymentReference": "0123456789",
+            "callbackUrl": "https://example.com/api/swishcb/paymentrequests",
+            "payerAlias": "4671234768",
+            "payeeAlias": "1234679304",
+            "amount": "100",
+            "currency": "SEK",
+            "message": "Kingston USB Flash Drive 8 GB"
+        }
+    data_dump = json.dumps(data)
+    print(data_dump)
+    response = requests.put(
+        url="https://mss.cpc.getswish.net/swish-cpcapi/api/v2/paymentrequests/11A86BE70EA346E4B1C39C874173F088",
+        headers={"Content-Type": "application/json"},
+        cert=("certs/Swish_Merchant_TestCertificate_1234679304.pem", "certs/Swish_Merchant_TestCertificate_1234679304.key"),
+        verify="certs/Swish_TLS_RootCA.pem",
+        json=data_dump
+        )
+    print(response)
 if __name__ == "__main__":
     pass
     # test_temp_endpoint()
     # auth_test()
-    # test_swish()
+    #test_swish()
     # test_create_payment()
     # print("All tests passed!")
-    from datetime import datetime, timedelta
-    print()
-    print(datetime.now())
+    temp_test()

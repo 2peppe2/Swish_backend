@@ -44,7 +44,6 @@ class Payment(db.Model):
     def to_dict(self):
         return {
             "id": self.id,
-            "transaction_id": self.transaction_id,
             "payee_payment_reference": self.payee_payment_reference,
             "payment_reference": self.payment_reference,
             "payee_alias": self.payee_alias,

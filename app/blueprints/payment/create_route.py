@@ -6,12 +6,10 @@ from app.models import Payment
 from app.extensions import db, swish_client
 from app.swish.exceptions import SwishError
 from .validators import CreatePaymentForm
+from . import payment_bp
 
 
-payment = Blueprint("payment", __name__)
-
-
-@payment.route("/create", methods=["POST"])
+@payment_bp.route("/create", methods=["POST"])
 def create_payment_route():
     form = CreatePaymentForm()
     if not form.validate_on_submit():
@@ -43,14 +41,14 @@ def create_payment_route():
             + swish_error.error_code
         )
         return swish_error.error_message, swish_error.error_code
-    current_app.logger.info(
+    """current_app.logger.info(
         "Payment request created "
         + payment_request.id
         + ", "
         + payment_request.payee_payment_reference
-    )
+    )""" #TODO FIX THIS
     new_payment = Payment(
-        transaction_id=payment_request.id,
+        id=payment_request.id,
         payee_payment_reference=payment_request.payee_payment_reference,
         payment_reference=None,
         payee_alias=payment_request.payee_alias,
@@ -64,4 +62,4 @@ def create_payment_route():
     )
     db.session.add(new_payment)
     db.session.commit()
-    return jsonify(new_payment.to_dict()), 200
+    return jsonify(new_payment.to_dict()), 201

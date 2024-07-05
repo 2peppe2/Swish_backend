@@ -1,6 +1,5 @@
 from schematics import models, types
 
-
 class Payment(models.Model):
     id = types.StringType()
     payee_payment_reference = types.StringType(serialized_name="payeePaymentReference")

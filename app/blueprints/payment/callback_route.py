@@ -6,13 +6,13 @@ from datetime import datetime
 
 from app.models import Payment
 from app.extensions import db
+from . import payment_bp
 
-payment = Blueprint("payment", __name__)
 load_dotenv()
 allowed_ip = getenv("SWISH_CALLBACK_IP")
 
 
-@payment.route("/callback", methods=["POST"])
+@payment_bp.route("/callback", methods=["POST"])
 def callback_route():
     # if request.remote_addr != allowed_ip:
     #    return "Forbidden", 403

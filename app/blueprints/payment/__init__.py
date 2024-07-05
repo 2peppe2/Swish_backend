@@ -1,5 +1,4 @@
 from flask import Blueprint
 
-payment = Blueprint("payment", __name__)
-from .create_route import *
-from .callback_route import *
+payment_bp = Blueprint("payment", __name__)
+from . import create_route, callback_route, cancel_route

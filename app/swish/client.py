@@ -16,7 +16,7 @@ except ImportError:
 
 
 class SwishClient(object):
-    def __init__(self, environment, merchant_swish_number, cert, verify=False):
+    def __init__(self, environment:str, merchant_swish_number:str, cert:tuple, verify:str=False):
         
         self.environment = Environment.parse_environment(environment)
         self.merchant_swish_number = merchant_swish_number
@@ -78,33 +78,36 @@ class SwishClient(object):
         payment_request.import_data(updated_payment_request_data)
         return payment_request
 
-    def get_payment(self, payment_request_id):
+    def get_payment(self, payment_request_id:str)->Payment:
         response = self.get("v1/paymentrequests/" + payment_request_id)
         response.raise_for_status()
         response_dict = response.json()
         del response_dict["callbackIdentifier"]
         return Payment(response_dict)
     
-    def cancel_payment(self, payment_request_id):
-        response = self.patch("v1/paymentrequests/" + payment_request_id, {
-            "op": "replace",
-            "path": "/status",
-            "value": "cancelled"
-        })
+    def cancel_payment(self, payment_request_id:str)->Payment:
+        payload = [{
+                    "op": "replace",
+                    "path": "/status",
+                    "value": "cancelled"
+                    }]
+        response = self.patch("v1/paymentrequests/" + payment_request_id, json.dumps(payload))
         response.raise_for_status()
-        return Payment(response.json())
+        response_dict = response.json()
+        del response_dict["callbackIdentifier"]
+        return Payment(response_dict)
 
     def create_refund(
         self,
-        original_payment_reference,
-        amount,
-        currency,
-        callback_url,
-        payer_payment_reference=None,
-        payment_reference=None,
-        payee_alias=None,
-        message=None,
-    ):
+        original_payment_reference:str,
+        amount:float,
+        currency:str,
+        callback_url:str,
+        payer_payment_reference:str,
+        payment_reference:str=None,
+        payee_alias:str=None,
+        message:str=None,
+    )->Refund:
         refund_request = Refund(
             {
                 "payer_alias": self.merchant_swish_number,
@@ -129,7 +132,7 @@ class SwishClient(object):
             }
         )
 
-    def get_refund(self, refund_id):
+    def get_refund(self, refund_id:str)->Refund:
         response = self.get("refunds/" + refund_id)
         response.raise_for_status()
         return Refund(response.json())

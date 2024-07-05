@@ -20,6 +20,7 @@ pluggy
 psycopg2-binary
 PyJWT
 pytest
+pytest-cov
 python-dotenv
 requests
 SQLAlchemy

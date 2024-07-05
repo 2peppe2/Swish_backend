@@ -1,17 +1,17 @@
-from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy import Column, String, Float, DateTime
 from ..extensions import db
 
 
 class Payment(db.Model):
     id = Column(String(36), nullable=False, primary_key=True)
-    payee_payment_reference = Column(String(36), nullable=True)
+    payee_payment_reference = Column(String(36), nullable=False)
     payment_reference = Column(String(36), nullable=True)  # From bank
-    payee_alias = Column(Integer, nullable=True)
-    payer_alias = Column(Integer, nullable=True)
+    payee_alias = Column(String, nullable=False)
+    payer_alias = Column(String, nullable=False)
     currency = Column(String(5), nullable=False)
     message = Column(String(50), nullable=True)
     status = Column(String(15), nullable=False)
-    amount = Column(Integer, nullable=False)
+    amount = Column(Float, nullable=False)
     created_at = Column(DateTime, nullable=False)
     paid_at = Column(DateTime, nullable=True)
 
@@ -20,12 +20,12 @@ class Payment(db.Model):
         id: str,
         payee_payment_reference: str,
         payment_reference: str,
-        payee_alias: int,
-        payer_alias: int,
+        payee_alias: str,
+        payer_alias: str,
         currency: str,
         message: str,
         status: str,
-        amount: int,
+        amount: float,
         created_at: DateTime,
         paid_at: DateTime
     ):

@@ -4,7 +4,6 @@ from requests.exceptions import HTTPError
 
 from app.models import Payment
 from app.extensions import db, swish_client
-from app.swish.exceptions import SwishError
 from .validators import CreatePaymentForm
 from . import payment_bp
 
@@ -33,34 +32,20 @@ def create_payment_route():
             "Swish server response http_code " + str(http_error.response.status_code)
         )
         return http_error.response.text, http_error.response.status_code
-    except SwishError as swish_error:
-        current_app.logger.error(
-            "Request object error "
-            + swish_error.error_message
-            + " "
-            + swish_error.error_code
-        )
-        return swish_error.error_message, swish_error.error_code
+    
     current_app.logger.info(
-        "Payment request created "
-        + payment_request.id
-        + ", "
-        + payment_request.payee_payment_reference
-        + ", "
-        + str(payment_request.amount)
-        + " "
-        + payment_request.currency
+        f"Payment request created {payment_request.id}, {payment_request.payee_payment_reference}, {payment_request.amount} {payment_request.currency}"
     )
     new_payment = Payment(
-        id=payment_request.id,
-        payee_payment_reference=payment_request.payee_payment_reference,
+        id=str(payment_request.id),
+        payee_payment_reference=str(payment_request.payee_payment_reference),
         payment_reference=None,
-        payee_alias=payment_request.payee_alias,
-        payer_alias=payment_request.payer_alias,
-        currency=payment_request.currency,
-        message=payment_request.message,
-        status=payment_request.status,
-        amount=payment_request.amount,
+        payee_alias=str(payment_request.payee_alias),
+        payer_alias=str(payment_request.payer_alias),
+        currency=str(payment_request.currency),
+        message=str(payment_request.message),
+        status=str(payment_request.status),
+        amount=float(payment_request.amount),
         created_at=payment_request.date_created,
         paid_at=None,
     )

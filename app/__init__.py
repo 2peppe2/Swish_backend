@@ -5,6 +5,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
+from datetime import datetime
 
 from .extensions import db, jwt, bcrypt
 
@@ -51,11 +52,22 @@ def create_admin_acount():
 
 
 def configure_logging(app):
+    
+    # Get the current date
+    now = datetime.now()
+    year = now.strftime("%Y")
+    month = now.strftime("%B")
+
     if not os.path.exists("logs"):
         os.mkdir("logs")
-
+    
+    # Define the log directory and file name
+    log_dir = os.path.join("logs", year, month)
+    log_file = os.path.join(log_dir, "app.log")
+    os.makedirs(log_dir, exist_ok=True)
+    
     file_handler = TimedRotatingFileHandler(
-        "logs/flask_app.log", when="midnight", backupCount=10
+        log_file, when="midnight", backupCount=10
     )
     file_handler.setFormatter(
         logging.Formatter(

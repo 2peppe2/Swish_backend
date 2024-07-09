@@ -16,12 +16,15 @@ def cancel_route():
     if not form.validate_on_submit():
         return jsonify(form.errors), 400
     id = form.id.data
-    payment = Payment.query.filter_by(id=id).first_or_404()
+    payment_request = Payment.query.filter_by(id=id).first_or_404()
     try:
         canceled_payment = swish_client.cancel_payment(id)
     except HTTPError as http_error:
         current_app.logger.error(f"Error canceling payment: {http_error}")
         return http_error.response.text, http_error.response.status_code
-    payment.status = canceled_payment.status
+    current_app.logger.info(
+        f"Payment request cancelled: {payment_request.id}, {payment_request.payee_payment_reference}, {payment_request.amount} {payment_request.currency}"
+    )
+    payment_request.status = canceled_payment.status
     db.session.commit()
     return "", 200

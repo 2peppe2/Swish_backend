@@ -3,12 +3,13 @@ from requests.exceptions import HTTPError
 
 
 from app.models import Payment
-from app.extensions import db, swish_client
+from app.extensions import db, swish_client, csrf
 from .validators import CreatePaymentForm
 from . import payment_bp
 
 
 @payment_bp.route("/create", methods=["POST"])
+@csrf.exempt
 def create_payment_route():
     form = CreatePaymentForm()
     if not form.validate_on_submit():
@@ -22,7 +23,7 @@ def create_payment_route():
         payment_request = swish_client.create_payment(
             amount,
             "SEK",
-            "https://p3trus.se/",
+            "https://swish.p3trus.se/pyamnet/callback",
             payeePaymentReference,
             message,
             payerAlias,

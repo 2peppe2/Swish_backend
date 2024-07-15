@@ -7,7 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime
 
-from .extensions import db, jwt, bcrypt
+from .extensions import db, jwt, bcrypt, csrf
 
 
 from typing import Dict
@@ -29,6 +29,7 @@ def create_app(config_name: str):
     db.init_app(app)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    csrf.init_app(app)
     with app.app_context():
         db.create_all()
         create_admin_acount()

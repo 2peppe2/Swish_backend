@@ -9,7 +9,7 @@ from app.extensions import db
 from . import payment_bp
 
 load_dotenv()
-allowed_ip = getenv("SWISH_CALLBACK_IP")
+allowed_ip = getenv("ALLOWED_SWISH_CALLBACK_IP")
 
 
 @payment_bp.route("/callback", methods=["POST"])

@@ -15,13 +15,11 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
-    WTF_CSRF_ENABLED = False
 
 
 class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("TEST_DATABASE_URL") or "sqlite:///test.db"
-    WTF_CSRF_ENABLED = False
 
 
 class ProductionConfig(Config):

@@ -24,6 +24,7 @@ pytest-cov
 python-dotenv
 requests
 SQLAlchemy
+pymysql
 typing_extensions
 urllib3
 waitress

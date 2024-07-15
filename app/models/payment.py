@@ -6,8 +6,8 @@ class Payment(db.Model):
     id = Column(String(36), nullable=False, primary_key=True)
     payee_payment_reference = Column(String(36), nullable=False)
     payment_reference = Column(String(36), nullable=True)  # From bank
-    payee_alias = Column(String, nullable=False)
-    payer_alias = Column(String, nullable=False)
+    payee_alias = Column(String(20), nullable=False)
+    payer_alias = Column(String(20), nullable=False)
     currency = Column(String(5), nullable=False)
     message = Column(String(50), nullable=True)
     status = Column(String(15), nullable=False)

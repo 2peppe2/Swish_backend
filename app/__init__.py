@@ -6,6 +6,7 @@ from logging.handlers import TimedRotatingFileHandler
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime
+from flask_wtf.csrf import CSRFError
 
 from .extensions import db, jwt, bcrypt, csrf
 
@@ -18,6 +19,7 @@ from .blueprints.auth import auth as auth_blueprint
 
 def register_blueprints(app: Flask):
     app.register_blueprint(payment_blueprint, url_prefix="/payment")
+    csrf.exempt(payment_blueprint)
     app.register_blueprint(auth_blueprint, url_prefix="/auth")
 
 
@@ -33,7 +35,7 @@ def create_app(config_name: str):
     with app.app_context():
         db.create_all()
         create_admin_acount()
-
+    register_error_handlers(app)
     register_blueprints(app)
     return app
 
@@ -80,3 +82,11 @@ def configure_logging(app):
     app.logger.addHandler(file_handler)
     app.logger.setLevel(logging.INFO)
     app.logger.info("App startup")
+
+def register_error_handlers(app):
+    @app.errorhandler(Exception)
+    def handle_exception(error):
+        app.logger.error('Unhandled Exception: %s', (error))
+        return 'error', error.code
+    
+

@@ -5,12 +5,13 @@ from os import getenv
 from datetime import datetime
 
 from app.models import Payment
-from app.extensions import db, swish_client
+from app.extensions import db, swish_client, csrf
 from .validators import CancelPaymentForm
-from . import payment_bp
+from . import payment_bp 
 
 
 @payment_bp.route("/cancel", methods=["POST"])
+@csrf.exempt
 def cancel_route():
     form = CancelPaymentForm()
     if not form.validate_on_submit():

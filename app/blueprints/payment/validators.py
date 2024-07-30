@@ -3,6 +3,9 @@ from wtforms import StringField, IntegerField
 from wtforms.validators import DataRequired, Length
 
 class CreatePaymentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
     payeePaymentReference = StringField(
         "payeePaymentReference", validators=[DataRequired(message="payeePaymentReference is required")]
     )
@@ -14,4 +17,6 @@ class CreatePaymentForm(FlaskForm):
     message = StringField("message", validators=[Length(min=0, max=50, message="message must be between 0 and 50 characters")])
 
 class CancelPaymentForm(FlaskForm):
+    class Meta:
+        csrf = False
     id = StringField("id", validators=[DataRequired(message="id is required"), Length(min=32, max=32)])

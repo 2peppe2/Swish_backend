@@ -9,7 +9,6 @@ from . import payment_bp
 
 
 @payment_bp.route("/create", methods=["POST"])
-@csrf.exempt
 def create_payment_route():
     form = CreatePaymentForm()
     if not form.validate_on_submit():
@@ -18,12 +17,17 @@ def create_payment_route():
     payerAlias = form.payerAlias.data
     amount = form.amount.data
     message = form.message.data
+    """print(request.json)
+    payeePaymentReference = "123456"
+    payerAlias = "123456789"
+    amount = 100
+    message = "Test"""
 
     try:
         payment_request = swish_client.create_payment(
             amount,
             "SEK",
-            "https://swish.p3trus.se/pyamnet/callback",
+            "https://swish.p3trus.se/payment/callback",
             payeePaymentReference,
             message,
             payerAlias,

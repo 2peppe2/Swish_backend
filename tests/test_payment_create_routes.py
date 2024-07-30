@@ -14,6 +14,7 @@ def test_payment_create_route_success(client):
             "amount": 100,
             "message": "Test",
         },
+        headers={"Content-Type": "application/json"}
     )
     assert response.status_code == 201
 

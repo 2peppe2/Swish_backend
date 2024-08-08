@@ -10,20 +10,30 @@ from . import payment_bp
 
 @payment_bp.route("/create", methods=["POST"])
 def create_payment_route():
+    """
+    Create a payment route.
+
+    This function handles the creation of a payment route by validating the form data,
+    creating a payment request using the Swish client, and storing the payment details
+    in the database.
+
+    Returns:
+        A JSON response containing the payment details if successful, or the form errors
+        and HTTP status code 400 if the form validation fails.
+    """
+    # Validate the form data
     form = CreatePaymentForm()
     if not form.validate_on_submit():
         return jsonify(form.errors), 400
+
+    # Extract form data
     payeePaymentReference = form.payeePaymentReference.data
     payerAlias = form.payerAlias.data
     amount = form.amount.data
     message = form.message.data
-    """print(request.json)
-    payeePaymentReference = "123456"
-    payerAlias = "123456789"
-    amount = 100
-    message = "Test"""
 
     try:
+        # Create a payment request using the Swish client
         payment_request = swish_client.create_payment(
             amount,
             "SEK",
@@ -33,14 +43,18 @@ def create_payment_route():
             payerAlias,
         )
     except HTTPError as http_error:
+        # Log the Swish server response error
         current_app.logger.error(
             "Swish server response http_code " + str(http_error.response.status_code)
         )
         return http_error.response.text, http_error.response.status_code
     
+    # Log the created payment request details
     current_app.logger.info(
         f"Payment request created {payment_request.id}, {payment_request.payee_payment_reference}, {payment_request.amount} {payment_request.currency}"
     )
+
+    # Create a new payment object and store it in the database
     new_payment = Payment(
         id=str(payment_request.id),
         payee_payment_reference=str(payment_request.payee_payment_reference),
@@ -56,4 +70,4 @@ def create_payment_route():
     )
     db.session.add(new_payment)
     db.session.commit()
-    return jsonify(new_payment.to_dict()), 201
+    

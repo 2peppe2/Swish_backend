@@ -9,6 +9,7 @@ from . import payment_bp
 
 
 @payment_bp.route("/create", methods=["POST"])
+@csrf.exempt
 def create_payment_route():
     """
     Create a payment route.
@@ -31,6 +32,7 @@ def create_payment_route():
     payerAlias = form.payerAlias.data
     amount = form.amount.data
     message = form.message.data
+    redirect_callback_url = form.redirectCallbackUrl.data
 
     try:
         # Create a payment request using the Swish client
@@ -48,7 +50,7 @@ def create_payment_route():
             "Swish server response http_code " + str(http_error.response.status_code)
         )
         return http_error.response.text, http_error.response.status_code
-    
+
     # Log the created payment request details
     current_app.logger.info(
         f"Payment request created {payment_request.id}, {payment_request.payee_payment_reference}, {payment_request.amount} {payment_request.currency}"
@@ -67,7 +69,8 @@ def create_payment_route():
         amount=float(payment_request.amount),
         created_at=payment_request.date_created,
         paid_at=None,
+        redirect_callback_url=str(redirect_callback_url),
     )
     db.session.add(new_payment)
     db.session.commit()
-    
+    return "", 201

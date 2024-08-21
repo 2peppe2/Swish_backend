@@ -1,6 +1,7 @@
 from run import app
 from app.extensions import db
 import pytest
+import os
 
 
 @pytest.fixture
@@ -11,6 +12,12 @@ def client():
 
 @pytest.fixture(scope="session", autouse=True)
 def demount_db():
-    # Code to teardown or reset the database
+    """Code to teardown or reset the database"""
     db.drop_all()
-    yield  # This a
+    yield
+
+@pytest.fixture
+def get_version():
+    """Fixture to fetch an environment variable."""
+    version = os.getenv('VERSION')
+    yield version

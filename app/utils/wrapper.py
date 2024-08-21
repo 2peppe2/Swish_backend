@@ -9,6 +9,6 @@ def require_api_key(f):
     def decorated_function(*args, **kwargs):
         api_key = request.headers.get('x-api-key')
         if api_key not in API_KEYS:
-            return jsonify({"error": "Forbidden: Invalid API key"}), 403
+            return jsonify({"error": "Forbidden: Invalid API key"}), 401
         return f(*args, **kwargs)
     return decorated_function

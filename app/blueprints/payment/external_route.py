@@ -45,10 +45,18 @@ def external_route(ref: str):
         )
         db.session.add(new_payment)
         db.session.commit()
+<<<<<<< HEAD
         return jsonify({"id": id, "phoneNumber": response_data["payer_alias"], "amount": response_data["amount"]}), 200
 
     except HTTPError as http_error:
         current_app.logger.error(
             f"Swish server response http_code {str(http_error.response.status_code)}, ref: {ref} tried fetching data"
+=======
+        return jsonify({"phoneNumber": response_data["payer_alias"], "id": id}), 200
+
+    except HTTPError as http_error:
+        current_app.logger.error(
+            f"Swish server response http_code {str(http_error.response.status_code)}, ref: {ref} tried getting data"
+>>>>>>> 6422329b03832a401cb3e14751a0afdf9c45339a
         )
         return jsonify(http_error.response.content.decode()), http_error.response.status_code

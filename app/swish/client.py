@@ -5,7 +5,6 @@ import json
 
 from .environment import Environment
 from .models import Payment, Refund
-from app.utils import generate_uuid
 
 try:
     from urllib3.contrib import pyopenssl
@@ -47,6 +46,7 @@ class SwishClient(object):
 
     def create_payment(
         self,
+        id:str,
         amount:float,
         currency:str,
         callback_url:str,
@@ -66,11 +66,10 @@ class SwishClient(object):
             }
         )
 
-        uuid = generate_uuid()
-        response = self.post("v2/paymentrequests/" + uuid, payment_request.to_primitive())
+        response = self.post("v2/paymentrequests/" + id, payment_request.to_primitive())
         response.raise_for_status()
         updated_payment_request_data = {
-            "id": uuid,
+            "id": id,
             "location": response.headers.get("Location"),
             "status": "CREATED",
             "date_created": datetime.now(),

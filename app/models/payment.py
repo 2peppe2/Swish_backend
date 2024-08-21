@@ -7,13 +7,15 @@ class Payment(db.Model):
     payee_payment_reference = Column(String(36), nullable=False)
     payment_reference = Column(String(36), nullable=True)  # From bank
     payee_alias = Column(String(20), nullable=False)
-    payer_alias = Column(String(20), nullable=False)
+    payer_alias = Column(String(20), nullable=True)
     currency = Column(String(5), nullable=False)
     message = Column(String(50), nullable=True)
     status = Column(String(15), nullable=False)
     amount = Column(Float, nullable=False)
     created_at = Column(DateTime, nullable=False)
     paid_at = Column(DateTime, nullable=True)
+    redirect_callback_url = Column(String(255), nullable=False)
+    
 
     def __init__(
         self,
@@ -27,7 +29,8 @@ class Payment(db.Model):
         status: str,
         amount: float,
         created_at: DateTime,
-        paid_at: DateTime
+        paid_at: DateTime,
+        redirect_callback_url: str,
     ):
         self.id = id
         self.payee_payment_reference = payee_payment_reference
@@ -40,6 +43,7 @@ class Payment(db.Model):
         self.amount = amount
         self.created_at = created_at
         self.paid_at = paid_at
+        self.redirect_callback_url = redirect_callback_url
 
     def to_dict(self):
         return {
@@ -54,4 +58,5 @@ class Payment(db.Model):
             "amount": self.amount,
             "created_at": self.created_at,
             "paid_at": self.paid_at,
+            "redirect_callback_url": self.redirect_callback_url,
         }

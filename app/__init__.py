@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, Blueprint
 from config import config
 import os
 import logging
@@ -18,12 +18,16 @@ from .blueprints.auth import auth as auth_blueprint
 
 
 def register_blueprints(app: Flask):
-    app.register_blueprint(payment_blueprint, url_prefix="/payment")
+    main_bp = Blueprint("main", __name__)
+    main_bp.register_blueprint(payment_blueprint, url_prefix="/payment")
     csrf.exempt(payment_blueprint)
-    app.register_blueprint(auth_blueprint, url_prefix="/auth")
+    main_bp.register_blueprint(auth_blueprint, url_prefix="/auth")
+    version = os.getenv("VERSION")
+    app.register_blueprint(main_bp, url_prefix=f"/v{version}/backend")
 
 
 def create_app(config_name: str):
+    load_dotenv()
     app = Flask(__name__)
     app.config.from_object(config[config_name])
     configure_logging(app)
@@ -35,6 +39,7 @@ def create_app(config_name: str):
     with app.app_context():
         db.create_all()
         create_admin_acount()
+        create_temp_payment()
     register_error_handlers(app)
     register_blueprints(app)
     return app
@@ -43,7 +48,6 @@ def create_app(config_name: str):
 def create_admin_acount():
     from .models import User
 
-    load_dotenv()
     admin_email = os.getenv("ADMIN_EMAIL", "admin.swish@konf.se")
     admin_password = generate_password_hash(os.getenv("ADMIN_PASSWORD", "admin"))
 
@@ -51,6 +55,27 @@ def create_admin_acount():
         return
     admin_user = User(email=admin_email, password=admin_password)
     db.session.add(admin_user)
+    db.session.commit()
+
+def create_temp_payment():
+    from .models import Payment
+    load_dotenv()
+    from app.utils import generate_uuid
+    payment = Payment(
+        id= generate_uuid(),
+        payee_payment_reference="test_Ref",
+        payment_reference=None,
+        payer_alias=os.getenv("MERCHANT_SWISH_NUMBER", "1234567890"),
+        payee_alias="123456789",
+        amount=100,
+        currency="SEK",
+        message="test",
+        status="Initiated",
+        created_at=datetime.now(),
+        paid_at=None,
+        redirect_callback_url="https://example.com/callback"
+    )
+    db.session.add(payment)
     db.session.commit()
 
 

@@ -2,26 +2,27 @@ from datetime import datetime, timedelta
 
 from app.models import Payment
 from run import app
-from . import client
+from . import client, get_version
 
 
-def test_payment_create_route_success(client):
+def test_payment_create_route_success(client, get_version):
     response = client.post(
-        "/payment/create",
+        f"/v{get_version}/backend/payment/create",
         json={
             "payeePaymentReference": "Id4",
             "payerAlias": "123456780",
             "amount": 100,
             "message": "Test",
+            "redirectCallbackUrl": "https://example.se/callback",
         },
-        headers={"Content-Type": "application/json"}
+        headers={"Content-Type": "application/json"},
     )
     assert response.status_code == 201
 
 
-def test_payment_create_route_missing_fields(client):
+def test_payment_create_route_missing_fields(client, get_version):
     response = client.post(
-        "/payment/create",
+        f"/v{get_version}/backend/payment/create",
         json={
             "payeePaymentReference": "Id4",
             "payerAlias": "123456780",
@@ -31,9 +32,9 @@ def test_payment_create_route_missing_fields(client):
     assert response.status_code == 400
 
 
-def test_payment_create_route_invalid_fields(client):
+def test_payment_create_route_invalid_fields(client, get_version):
     response = client.post(
-        "/payment/create",
+        f"/v{get_version}/backend/payment/create",
         json={
             "payeePaymentReference": "Id4",
             "payerAlias": "123456780",
@@ -42,6 +43,3 @@ def test_payment_create_route_invalid_fields(client):
         },
     )
     assert response.status_code == 400
-
-
-    

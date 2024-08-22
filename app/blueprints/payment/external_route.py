@@ -37,7 +37,7 @@ def external_route(ref: str):
             payer_alias=None,
             currency=str(getenv("CURRENCY")),
             message=str(response_data["message"]),
-            status=str("INITIATED"),
+            status=str("CREATED"),
             amount=float(response_data["amount"]),
             created_at=datetime.now(),
             paid_at=None,

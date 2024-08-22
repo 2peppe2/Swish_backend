@@ -70,7 +70,7 @@ def create_temp_payment():
         amount=100,
         currency="SEK",
         message="test",
-        status="Initiated",
+        status="CREATED",
         created_at=datetime.now(),
         paid_at=None,
         redirect_callback_url="https://example.com/callback"

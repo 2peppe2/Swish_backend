@@ -43,3 +43,20 @@ class CancelPaymentForm(FlaskForm):
         "id",
         validators=[DataRequired(message="id is required"), Length(min=32, max=32)],
     )
+
+
+class StartPaymentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    id = StringField(
+        "id",
+        validators=[DataRequired(message="id is required"), Length(min=32, max=32)],
+    )
+    phoneNumber = StringField(
+        "phoneNumber",
+        validators=[
+            DataRequired(message="phoneNumber is required"),
+            Length(min=8, max=15),
+        ],
+    )

@@ -2,6 +2,10 @@ from run import app
 from app.extensions import db
 import pytest
 import os
+from datetime import datetime, timedelta
+
+
+from app.models import Payment
 
 
 @pytest.fixture
@@ -26,3 +30,22 @@ def get_version():
     """Fixture to fetch an environment variable."""
     version = os.getenv("VERSION")
     yield version
+
+def add_payment_to_database(uuid, message="payment test"):
+    payment = Payment(
+        id=uuid,
+        payee_payment_reference="0123456789",
+        payment_reference=None,
+        payer_alias=None,
+        payee_alias="1234679304",
+        amount=100,
+        currency="SEK",
+        message=message,
+        status="PROCESSING",
+        created_at=datetime.now() - timedelta(seconds=5),
+        paid_at=None,
+        redirect_callback_url="https://example.com/callback",
+    )
+    with app.app_context():
+        db.session.add(payment)
+        db.session.commit()

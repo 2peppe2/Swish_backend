@@ -56,7 +56,7 @@ class Payment(db.Model):
             "message": self.message,
             "status": self.status,
             "amount": self.amount,
-            "created_at": self.created_at,
-            "paid_at": self.paid_at,
+            "created_at": self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
+            "paid_at": self.paid_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
             "redirect_callback_url": self.redirect_callback_url,
         }

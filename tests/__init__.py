@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 
 
 from app.models import Payment
+from app.utils.wrapper import require_api_key
 
 
 @pytest.fixture
@@ -15,7 +16,7 @@ def client():
         yield client
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(autouse=True)
 def teardown_database():
     """Code to teardown or reset the database"""
     with app.app_context():
@@ -30,6 +31,33 @@ def get_version():
     """Fixture to fetch an environment variable."""
     version = os.getenv("VERSION")
     yield version
+
+@pytest.fixture(scope="session")
+def merchant_mock_server():
+    from flask import Flask, request, jsonify
+    from flask.testing import FlaskClient
+
+    mock_server = Flask(__name__)
+
+    @mock_server.route("/backend/payment/<ref>", methods=["GET"])
+    @require_api_key
+    def get_payment(ref):
+        return jsonify(
+            {
+                "amount": 100,
+                "message": "payment test",
+                "payer_alias": "46712347689",
+                "redirect_callback_url": "https://example.com/callback",
+            }
+        )
+
+    @mock_server.route("/backend/payment/ref/<ref>", methods=["PUT"])
+    @require_api_key
+    def put_payment(ref):
+        return "", 200
+
+    with mock_server.test_client() as client:
+        yield client
 
 def add_payment_to_database(uuid, message="payment test"):
     payment = Payment(

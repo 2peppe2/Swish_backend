@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from app.models import Payment
 from run import app
@@ -11,8 +11,8 @@ from . import client, get_version
 
 
 
-""" def test_payment_callback_route(client, get_version):
-    Test the callback route.
+def test_payment_callback_route(client, get_version):
+    """Test the callback route."""
     uuid = generate_uuid()
     payment = Payment(
         id=uuid,
@@ -45,12 +45,10 @@ from . import client, get_version
             "currency": "SEK",
             "message": "payment test",
             "status": "PAID",
-            "dateCreated": datetime.now() - timedelta(seconds=5),
-            "datePaid": datetime.now(),
+            "dateCreated": (datetime.now(timezone(timedelta(hours=2))) - timedelta(seconds=5)).strftime('%Y-%m-%dT%H:%M:%S.%f%z'),
+            "datePaid": datetime.now(timezone(timedelta(hours=2))).strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
             "errorCode": None,
             "errorMessage": None,
         },
     )
-    assert response.status_code == 200 """
- #REMOVE
-
+    assert response.status_code == 200

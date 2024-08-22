@@ -1,30 +1,10 @@
-from datetime import datetime, timedelta
-
-from app.models import Payment
 from run import app
-from . import client, get_version, teardown_database
+from . import client, get_version, teardown_database, add_payment_to_database
 from app.extensions import db
 from app.utils import generate_uuid
 
 
-def add_payment_to_database(uuid, message="payment test"):
-    payment = Payment(
-        id=uuid,
-        payee_payment_reference="0123456789",
-        payment_reference=None,
-        payer_alias=None,
-        payee_alias="1234679304",
-        amount=100,
-        currency="SEK",
-        message=message,
-        status="PROCESSING",
-        created_at=datetime.now() - timedelta(seconds=5),
-        paid_at=None,
-        redirect_callback_url="https://example.com/callback",
-    )
-    with app.app_context():
-        db.session.add(payment)
-        db.session.commit()
+
 
 
 def test_payment_start_success(client, get_version):

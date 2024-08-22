@@ -63,7 +63,7 @@ cert/
 ├─ Swish_Merchant_TestCertificate_1234679304.key
 └─ Swish_TLS_RootCA.pem
 ```
-Can be downloaded from Swish: https://developer.swish.nu/documentation/environments#certificates
+Development certificates can be downloaded from Swish: https://developer.swish.nu/documentation/environments#certificates
 
 
 ## Run server

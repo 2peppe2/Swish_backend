@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app
+import requests
 from requests.exceptions import HTTPError
 from dotenv import load_dotenv
 from os import getenv
@@ -26,4 +27,15 @@ def callback_route():
     )
     db.session.commit()
     current_app.logger.info(f"Payment updated: {payment.to_dict()}")
+
+    response = requests.put(
+        getenv("MERCHANT_BASE_URL") + f"/backend/payment/ref/{payment.payee_payment_reference}",
+        json=payment.to_dict(),
+        headers={"x-api-key": getenv("MERCHANT_API_KEY")},
+    )
+    if response.status_code != 200:
+        current_app.logger.error(
+            f"Failed to update payment in merchant system: {response.content}"
+        )
+        return response.content, response.status_code
     return "", 200

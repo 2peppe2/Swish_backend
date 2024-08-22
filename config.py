@@ -23,6 +23,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+    DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or "sqlite:///prod.db"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
 

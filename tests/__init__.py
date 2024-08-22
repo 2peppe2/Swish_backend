@@ -32,8 +32,9 @@ def get_version():
     version = os.getenv("VERSION")
     yield version
 
+
 @pytest.fixture(scope="session")
-def merchant_mock_server():
+def merchant_mock_client():
     from flask import Flask, request, jsonify
     from flask.testing import FlaskClient
 
@@ -42,6 +43,8 @@ def merchant_mock_server():
     @mock_server.route("/backend/payment/<ref>", methods=["GET"])
     @require_api_key
     def get_payment(ref):
+        if ref == "404":
+            return "", 404
         return jsonify(
             {
                 "amount": 100,
@@ -58,6 +61,7 @@ def merchant_mock_server():
 
     with mock_server.test_client() as client:
         yield client
+
 
 def add_payment_to_database(uuid, message="payment test"):
     payment = Payment(

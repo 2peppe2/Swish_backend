@@ -12,14 +12,11 @@ from . import payment_bp
 from app.utils import generate_uuid
 
 
-@payment_bp.route("/status/", methods=["POST"])
+@payment_bp.route("/status/<payment_id>", methods=["GET"])
 @csrf.exempt
-def status_route():
+def status_route(payment_id):
     """Get the payment status from the database."""
-    # Validate the form data
-    form = StatusPaymentForm()
-    if not form.validate_on_submit():
-        return jsonify(form.errors), 400
-    id = form.id.data
-    payment = Payment.query.filter_by(id=id).first_or_404()
+    if len(payment_id) != 32:
+        return jsonify("Payment ID must be 32 characters long"), 400
+    payment = Payment.query.filter_by(id=payment_id).first_or_404()
     return jsonify(payment.status), 200

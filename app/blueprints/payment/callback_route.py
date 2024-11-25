@@ -29,7 +29,8 @@ def callback_route():
     current_app.logger.info(f"Payment updated: {payment.to_dict()}")
 
     response = requests.put(
-        getenv("MERCHANT_BASE_URL") + f"/backend/payment/ref/{payment.payee_payment_reference}",
+        getenv("MERCHANT_BASE_URL")
+        + f"/backend/payment/ref/{payment.payee_payment_reference}",
         json=payment.to_dict(),
         headers={"x-api-key": getenv("MERCHANT_API_KEY")},
     )

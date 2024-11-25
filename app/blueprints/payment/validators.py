@@ -60,3 +60,12 @@ class StartPaymentForm(FlaskForm):
             Length(min=8, max=15),
         ],
     )
+
+class StatusPaymentForm(FlaskForm):
+    class Meta:
+        csrf = False
+
+    id = StringField(
+        "id",
+        validators=[DataRequired(message="id is required"), Length(min=32, max=32)],
+    )

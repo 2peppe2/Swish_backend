@@ -6,12 +6,10 @@ from app.models import Payment
 from app.extensions import db, swish_client, csrf
 from .validators import StartPaymentForm
 from . import payment_bp
-from app.utils.wrapper import require_api_key
 
 
 @payment_bp.route("/start", methods=["PUT"])
 @csrf.exempt
-@require_api_key
 def start_payment_route():
     """
     
@@ -35,7 +33,7 @@ def start_payment_route():
             id=id,
             amount=db_payment.amount,
             currency=db_payment.currency,
-            callback_url="https://swish.p3trus.se/payment/callback",
+            callback_url="https://swish.p3trus.se/v1.0/backend/payment/callback",
             payee_payment_reference=db_payment.payee_payment_reference,
             message=db_payment.message,
             payer_alias=payerAlias,

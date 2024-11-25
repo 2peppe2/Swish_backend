@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 
 
 from app.models import Payment
-from app.utils.wrapper import require_api_key
 
 
 @pytest.fixture
@@ -41,7 +40,6 @@ def merchant_mock_client():
     mock_server = Flask(__name__)
 
     @mock_server.route("/backend/payment/<ref>", methods=["GET"])
-    @require_api_key
     def get_payment(ref):
         if ref == "404":
             return "", 404
@@ -55,7 +53,6 @@ def merchant_mock_client():
         )
 
     @mock_server.route("/backend/payment/ref/<ref>", methods=["PUT"])
-    @require_api_key
     def put_payment(ref):
         return "", 200
 

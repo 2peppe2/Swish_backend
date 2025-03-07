@@ -34,6 +34,10 @@ def external_route(ref: str):
                 200,
             )
         id = generate_uuid()
+        
+        if(Payment.query.filter_by(payee_payment_reference=ref).first()):
+            return jsonify({"error": "Payment already exists"}), 400
+        
         #Here is should fetch the payment from the merchant system
         new_payment = Payment(
             id=str(id),
@@ -58,6 +62,7 @@ def external_route(ref: str):
                     "phoneNumber": "",
                     "amount": new_payment.amount,
                     "redirectCallback": new_payment.redirect_callback_url,
+                    "status": new_payment.status,
                 }
             ),
             200,

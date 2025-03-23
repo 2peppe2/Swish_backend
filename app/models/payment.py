@@ -15,7 +15,6 @@ class Payment(db.Model):
     created_at = Column(DateTime, nullable=False)
     paid_at = Column(DateTime, nullable=True)
     redirect_callback_url = Column(String(255), nullable=False)
-    
 
     def __init__(
         self,
@@ -56,7 +55,15 @@ class Payment(db.Model):
             "message": self.message,
             "status": self.status,
             "amount": self.amount,
-            "created_at": self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
-            "paid_at": self.paid_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z"),
+            "created_at": (
+                self.created_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+                if self.created_at
+                else None
+            ),
+            "paid_at": (
+                self.paid_at.strftime("%Y-%m-%dT%H:%M:%S.%f%z")
+                if self.paid_at
+                else None
+            ),
             "redirect_callback_url": self.redirect_callback_url,
         }

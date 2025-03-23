@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime
 from flask_wtf.csrf import CSRFError
+from werkzeug.exceptions import HTTPException
 
 from .extensions import db, jwt, bcrypt, csrf
 
@@ -112,6 +113,9 @@ def register_error_handlers(app):
     @app.errorhandler(Exception)
     def handle_exception(error):
         app.logger.error('Unhandled Exception: %s', (error))
-        return 'error', error.code
+        if isinstance(error, HTTPException):
+            return 'error', error.code
+        else:
+            return 'error', 500
     
 

@@ -26,9 +26,10 @@ def external_route(ref: str):
                 jsonify(
                     {
                         "id": existing_payment.first().id,
-                        "phoneNumber": "",
+                        "phoneNumber": existing_payment.first().payer_alias,
                         "amount": existing_payment.first().amount,
                         "redirectCallback": existing_payment.first().redirect_callback_url,
+                        "status": existing_payment.first().status,
                     }
                 ),
                 200,
@@ -44,9 +45,9 @@ def external_route(ref: str):
             payee_payment_reference=str(ref),
             payment_reference=None,
             payee_alias=str(getenv("MERCHANT_SWISH_NUMBER")),
-            payer_alias=None,
+            payer_alias="0705472993",
             currency=str(getenv("CURRENCY")),
-            message=str("test"),
+            message=str("1"),
             status=str("CREATED"),
             amount=float(200),
             created_at=datetime.now(),

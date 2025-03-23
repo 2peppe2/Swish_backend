@@ -33,7 +33,10 @@ def start_payment_route():
 
     db_payment = Payment.query.filter_by(id=id).first_or_404()
     if (db_payment.status != "CREATED"):
-        return jsonify({"error": "Payment already exists"}), 400
+        if (db_payment.status != "PAID"):
+            return jsonify({"error": "Payment already exists"}), 400
+        return jsonify({"error": "Payment already processed"}), 200
+    
     db_payment.payer_alias = payerAlias
     db.session.commit()
 

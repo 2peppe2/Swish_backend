@@ -93,7 +93,6 @@ class SwishClient(object):
         response = self.patch("v1/paymentrequests/" + payment_request_id, json.dumps(payload))
         response.raise_for_status()
         response_dict = response.json()
-        del response_dict["callbackIdentifier"]
         return Payment(response_dict)
 
     def create_refund(

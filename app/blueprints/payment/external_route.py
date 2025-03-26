@@ -18,7 +18,6 @@ def external_route(ref: str):
     """Get payment from the merchant system.
     Adds it to the database and the returns the necessary information to the client."""
     try:
-        print("external route")
         existing_payment = Payment.query.filter_by(payee_payment_reference=ref)
         if existing_payment.first():
             # Return the existing payment
